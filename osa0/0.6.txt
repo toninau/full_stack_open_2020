@@ -1,0 +1,9 @@
+note over selain:
+uusi muistiinpano luodaan ja lisätään listaan,
+selain renderöi listassa olevat muistiinpanot
+suorittaen redrawNotes-funktion (spa.js)
+end note
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+palvelin->selain: HTTP Status Code 201 {"message":"note created"}
+
