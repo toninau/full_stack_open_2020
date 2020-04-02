@@ -2,11 +2,30 @@ import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
 const Display = ({ good, neutral, bad }) => {
+  const all = good + neutral + bad
+
+  const average = () => {
+    if (all > 0) {
+      return (good - bad) / all
+    }
+    return 0
+  }
+
+  const positive = () => {
+    if (all > 0) {
+      return (good / all) * 100
+    }
+    return 0
+  }
+
   return (
     <div>
       <p>Good: {good}</p>
       <p>Neutral: {neutral}</p>
       <p>Bad: {bad}</p>
+      <p>All: {all}</p>
+      <p>Average: {average()}</p>
+      <p>Positive: {positive()} %</p>
     </div>
   )
 }
