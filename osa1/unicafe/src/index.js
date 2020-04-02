@@ -4,16 +4,16 @@ import ReactDOM from 'react-dom'
 const Statistics = ({ good, neutral, bad }) => {
   const all = good + neutral + bad
   const average = () => {
-    if (all > 0) {
       return (good - bad) / all
-    }
-    return 0
   }
   const positive = () => {
-    if (all > 0) {
       return (good / all) * 100
-    }
-    return 0
+  }
+  
+  if (all === 0) {
+    return (
+      <p>No feedback given</p>
+    )
   }
 
   return (
@@ -47,15 +47,15 @@ const App = () => {
       <h1>give feedback</h1>
       <Button
         handleClick={() => setGood(good + 1)}
-        text='Good'
+        text='good'
       />
       <Button
         handleClick={() => setNeutral(neutral + 1)}
-        text='Neutral'
+        text='neutral'
       />
       <Button
         handleClick={() => setBad(bad + 1)}
-        text='Bad'
+        text='bad'
       />
       <h1>statistics</h1>
       <Statistics good={good} neutral={neutral} bad={bad} />
