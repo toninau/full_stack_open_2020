@@ -16,9 +16,12 @@ const App = () => {
   return (
     <div>
       <Filter filterValue={newFilter} handleOnChange={(event) => setNewFilter(event.target.value)} />
-      <Countries countries={countries} filterValue={newFilter} />
+      <Countries
+        countries={countries}
+        filterValue={newFilter}
+        handleClick={(event) => setNewFilter(event.target.attributes.country.value)} />
     </div>
   )
-} 
+}
 
 export default App;
