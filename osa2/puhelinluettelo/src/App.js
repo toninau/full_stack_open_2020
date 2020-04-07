@@ -27,8 +27,22 @@ const App = () => {
     //const names = persons.map(person => person.name)
     //if (names.indexOf(newName) !== -1) {
     //if (persons.filter(person => person.name === newName).length > 0) {
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
+    //if (persons.some(person => person.name === newName)) {
+    const person = persons.find(person => person.name === newName)
+    const changedPerson = { ...person, number: newNumber }
+    if (person) {
+      if (window.confirm(`${newName} is already added to phonebook, replace old number with a new one?`)) {
+        personService
+          .update(person.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id !== person.id ? p : returnedPerson))
+          })
+          .catch(error => {
+            console.log('fail')
+          })
+        setNewName('')
+        setNewNumber('')
+      }
     } else {
       const personObject = {
         name: newName,
