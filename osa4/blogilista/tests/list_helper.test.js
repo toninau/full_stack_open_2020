@@ -56,3 +56,18 @@ describe('favorite blog', () => {
     expect(result).toBe(0)
   })
 })
+
+describe('author with most blogs', () => {
+  test('of a bigger list is calculated right', () => {
+    const result = listHelper.mostBlogs(blogs)
+    expect(result).toEqual({ author: 'Robert C. Martin', blogs: 3 })
+  })
+  test('when list has only one blog equals that', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual({ author: 'Edsger W. Dijkstra', blogs: 1 })
+  })
+  test('of empty list is zero', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toBe(0)
+  })
+})

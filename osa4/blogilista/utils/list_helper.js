@@ -12,8 +12,22 @@ const favoriteBlog = (blogs) => {
   return blog
 }
 
+const mostBlogs = (blogs) => {
+  const authorNames = [...new Set(blogs.map(blog => blog.author))]
+  const blogArray = authorNames.map(name => {
+    const blogObject = {
+      author: name,
+      blogs: blogs.filter(blog => blog.author === name).length
+    }
+    return blogObject
+  })
+  const mostCommon = blogArray.reduce((prev, current) => (prev.blogs > current.blogs) ? prev : current, 0)
+  return mostCommon
+}
+
 module.exports = {
   dummy,
   totalLikes,
-  favoriteBlog
+  favoriteBlog,
+  mostBlogs
 }
