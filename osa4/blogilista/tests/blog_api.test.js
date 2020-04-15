@@ -37,6 +37,12 @@ describe('HTTP GET /api/blogs', () => {
     const response = await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/)
     expect(response.body).toHaveLength(initialBlogs.length)
   })
+  test('identifying field is named id instead of _id', async () => {
+    const response = await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/)
+    response.body.forEach(blog => {
+      expect(blog.id).toBeDefined()
+    })
+  })
 })
 afterAll(() => {
   mongoose.connection.close()
