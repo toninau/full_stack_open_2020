@@ -10,12 +10,10 @@ blogsRouter.post('/', async (request, response) => {
   const body = request.body
 
   const blog = new Blog({
-    _id: body._id,
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes ? body.likes : 0,
-    __v: body.__v
+    likes: body.likes ? body.likes : 0
   })
 
   const savedBlog = await blog.save()
