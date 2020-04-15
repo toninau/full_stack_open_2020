@@ -54,6 +54,26 @@ describe('HTTP POST /api/blogs', () => {
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
     expect(blogsAtEnd).toContainEqual(newBlogReturned)
   })
+  test('if likes undefined/empty/null, likes equals 0', async () => {
+    const newBlog = {
+      _id: '5a422ba71b54a676234d17fb',
+      title: 'TDD harms architecture',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+      __v: 0
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    const likes = blogsAtEnd.find(blog => blog.id === newBlog._id).likes
+    expect(likes).toBe(0)
+  })
 })
 
 afterAll(() => {
