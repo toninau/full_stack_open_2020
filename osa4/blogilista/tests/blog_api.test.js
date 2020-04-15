@@ -77,6 +77,16 @@ describe('HTTP POST /api/blogs', () => {
     const likes = blogsAtEnd.find(blog => blog.title === newBlog.title).likes
     expect(likes).toBe(0)
   })
+  test('missing title and/or url returns status code 400', async () => {
+    const newBlog = {
+      author: 'Robert C. Martin'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
 
 afterAll(() => {
