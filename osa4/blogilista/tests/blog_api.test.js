@@ -101,6 +101,37 @@ describe('HTTP DELETE /api/blogs/:id', () => {
   })
 })
 
+describe('HTTP PUT /api/blogs/:id', () => {
+  test('succeeds with status code 200 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = {
+      title: 'Test title',
+      author: 'Test author',
+      url: 'Test url',
+      likes: 0
+    }
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const blogsWithoutID = blogsAtEnd.map(blog => {
+      const blogWithoutID = {
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: blog.likes
+      }
+      return blogWithoutID
+    })
+    expect(blogsWithoutID).toContainEqual(updatedBlog)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
