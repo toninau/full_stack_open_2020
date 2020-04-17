@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-mongoose.set('useFindAndModify', false)
-
 const blogSchema = mongoose.Schema({
   title: {
     type: String,
@@ -15,7 +13,7 @@ const blogSchema = mongoose.Schema({
   likes: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog'
+    ref: 'User'
   }
 })
 
