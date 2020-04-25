@@ -8,7 +8,6 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -50,8 +49,22 @@ const App = () => {
       .create(blogObject)
       .then(returnedBlog => {
         showNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'success')
-        setBlogs(blogs.concat(returnedBlog))
+        const blogToAdd = { ...returnedBlog, user }
+        setBlogs(blogs.concat(blogToAdd))
       })
+  }
+
+  const likeBlog = async (blogObject) => {
+    const likedBlog = {
+      user: blogObject.user.id,
+      likes: blogObject.likes + 1,
+      author: blogObject.author,
+      title: blogObject.title,
+      url: blogObject.url
+    }
+    const returnedBlog = await blogService.update(blogObject.id, likedBlog)
+    showNotification(`${returnedBlog.title} by ${returnedBlog.author} liked`, 'success')
+    setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : { ...blog, likes: ++blog.likes }))
   }
 
   const handleLogin = async (event) => {
@@ -122,7 +135,7 @@ const App = () => {
           </div>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} handleLike={likeBlog} />
           )}
         </div>
       }
