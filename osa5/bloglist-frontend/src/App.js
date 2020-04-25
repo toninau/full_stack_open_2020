@@ -76,11 +76,11 @@ const App = () => {
     if (window.confirm(`Delete ${blog.title} by ${blog.author}`)) {
       blogService
         .deleteId(id)
-        .then(response => {
+        .then(() => {
           showNotification(`Deleted ${blog.title} by ${blog.author}`, 'success')
           setBlogs(blogs.filter(blog => blog.id !== id))
         })
-        .catch(error => {
+        .catch(() => {
           showNotification(`Information of ${blog.title} has already been removed from server`, 'error')
           setBlogs(blogs.filter(blog => blog.id !== id))
         })
