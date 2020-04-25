@@ -71,6 +71,22 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : { ...blog, likes: ++blog.likes }))
   }
 
+  const removeBlog = id => {
+    const blog = blogs.find(blog => blog.id === id)
+    if (window.confirm(`Delete ${blog.title} by ${blog.author}`)) {
+      blogService
+        .deleteId(id)
+        .then(response => {
+          showNotification(`Deleted ${blog.title} by ${blog.author}`, 'success')
+          setBlogs(blogs.filter(blog => blog.id !== id))
+        })
+        .catch(error => {
+          showNotification(`Information of ${blog.title} has already been removed from server`, 'error')
+          setBlogs(blogs.filter(blog => blog.id !== id))
+        })
+    }
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -139,7 +155,13 @@ const App = () => {
           </div>
           {blogForm()}
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} handleLike={likeBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={likeBlog}
+              handleRemove={removeBlog}
+              username={user.username}
+            />
           )}
         </div>
       }
