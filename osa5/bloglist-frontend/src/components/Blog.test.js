@@ -29,7 +29,7 @@ test('renders title and author', () => {
   expect(component.container).not.toHaveTextContent(22)
 })
 
-test('clicking the button shows url and likes', () => {
+test('clicking the button shows url and likes', async () => {
   const component = render(
     <Blog
       blog={blog}
@@ -46,4 +46,25 @@ test('clicking the button shows url and likes', () => {
   expect(component.container).toHaveTextContent('test_author')
   expect(component.container).toHaveTextContent('test_url')
   expect(component.container).toHaveTextContent(22)
+})
+
+test('clicking like two times calls event handler twice', async () => {
+  const mockHandler = jest.fn()
+
+  const component = render(
+    <Blog
+      blog={blog}
+      handleLike={mockHandler}
+      handleRemove={() => console.log('remove')}
+      username={'test_username'}
+    />
+  )
+
+  const viewButton = component.getByText('view')
+  fireEvent.click(viewButton)
+  const likeButton = component.getByText('like')
+  fireEvent.click(likeButton)
+  fireEvent.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
 })
