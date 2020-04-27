@@ -16,29 +16,30 @@ const Blog = ({ blog, handleLike, handleRemove, username }) => {
     setVisible(!visible)
   }
 
-  if (!visible) {
-    return (
-      <div style={blogStyle}>
-        <div>{blog.title} {blog.author}
-          <button onClick={toggleVisibility}>view</button>
-        </div>
-      </div>
-    )
+  const fullDetails = () => {
+    if (visible) {
+      return (
+        <>
+          <p>{blog.url}</p>
+          <div>likes {blog.likes}
+            <button onClick={() => handleLike(blog)}>like</button>
+          </div>
+          <p>{blog.user.name}</p>
+          {username === blog.user.username ?
+            <button onClick={() => handleRemove(blog.id)}>remove</button> :
+            <></>
+          }
+        </>
+      )
+    }
   }
+
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div>{blog.title} {blog.author}
-        <button onClick={toggleVisibility}>hide</button>
+        <button onClick={toggleVisibility}>view</button>
       </div>
-      <p>{blog.url}</p>
-      <div>likes {blog.likes}
-        <button onClick={() => handleLike(blog)}>like</button>
-      </div>
-      <p>{blog.user.name}</p>
-      {username === blog.user.username ?
-        <button onClick={() => handleRemove(blog.id)}>remove</button> :
-        <></>
-      }
+      {fullDetails()}
     </div>
   )
 }
