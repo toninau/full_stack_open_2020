@@ -36,9 +36,9 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    setBlogs(blogs.sort((a, b) => b.likes - a.likes))
-  }, [blogs])
+  const sortBlogs = (blogs) => {
+    return blogs.sort((a, b) => b.likes - a.likes)
+  }
 
   const showNotification = (message, style) => {
     setNotification({ message: message, style: style })
@@ -54,7 +54,7 @@ const App = () => {
       .then(returnedBlog => {
         showNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 'success')
         const blogToAdd = { ...returnedBlog, user }
-        setBlogs(blogs.concat(blogToAdd))
+        setBlogs(sortBlogs(blogs.concat(blogToAdd)))
       })
   }
 
@@ -68,7 +68,7 @@ const App = () => {
     }
     const returnedBlog = await blogService.update(blogObject.id, likedBlog)
     showNotification(`${returnedBlog.title} by ${returnedBlog.author} liked`, 'success')
-    setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : { ...blog, likes: ++blog.likes }))
+    setBlogs(sortBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : { ...blog, likes: ++blog.likes })))
   }
 
   const removeBlog = id => {
@@ -78,12 +78,11 @@ const App = () => {
         .deleteId(id)
         .then(() => {
           showNotification(`Deleted ${blog.title} by ${blog.author}`, 'success')
-          setBlogs(blogs.filter(blog => blog.id !== id))
         })
         .catch(() => {
           showNotification(`Information of ${blog.title} has already been removed from server`, 'error')
-          setBlogs(blogs.filter(blog => blog.id !== id))
         })
+      setBlogs(sortBlogs(blogs.filter(blog => blog.id !== id)))
     }
   }
 

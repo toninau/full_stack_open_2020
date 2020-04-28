@@ -54,8 +54,9 @@ describe('Blog app', function () {
       cy.get('#url').type('url created by cypress')
       cy.get('#create-button').click()
       cy.contains('a new blog title created by cypress by author created by cypress added')
-      cy.contains('title created by cypress')
-      cy.contains('author created by cypress')
+      cy.get('.blogs')
+        .should('contain', 'author created by cypress')
+        .and('contain', 'author created by cypress')
     })
 
     describe('and several blogs exist', function () {
@@ -74,9 +75,9 @@ describe('Blog app', function () {
         })
       })
       it('one of those can be liked', function () {
-        cy.contains('second blog').parent().find('#view-button').click()
-        cy.contains('second blog').parent().find('#like-button').click()
-        cy.get('.blog:last').should('contain', 'likes 1')
+        cy.contains('first blog').parent().find('#view-button').click()
+        cy.contains('first blog').parent().find('#like-button').click()
+        cy.get('.blog:first').should('contain', 'likes 1')
       })
       it('one of those can be deleted', function () {
         cy.contains('second blog').parent().find('#view-button').click()
@@ -84,6 +85,17 @@ describe('Blog app', function () {
         cy.contains('Deleted second blog by author')
         cy.get('.blogs').should('not.contain', 'second blog')
         cy.get('.blogs').should('contain', 'first blog')
+      })
+      it('sorts blogs by the likes', function() {
+        cy.contains('second blog').parent().find('#view-button').click()
+        cy.contains('second blog').parent().find('#like-button').click()
+        cy.get('.blog:first').should('contain', 'second blog')
+        cy.get('.blog:last').should('contain', 'first blog')
+        cy.contains('first blog').parent().find('#view-button').click()
+        cy.contains('first blog').parent().find('#like-button').as('theButton').click()
+        cy.get('@theButton').click()
+        cy.get('.blog:first').should('contain', 'first blog')
+        cy.get('.blog:last').should('contain', 'second blog')
       })
     })
   })
