@@ -18,7 +18,7 @@ const Anecdote = ({ anecdote, handleClick }) => {
 }
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector(({filter, anecdotes}) => {
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
     if (!filter) {
       return anecdotes
     }
