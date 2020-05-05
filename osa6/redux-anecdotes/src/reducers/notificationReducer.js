@@ -7,13 +7,16 @@ const notificationReducer = (state = '', action) => {
   }
 }
 
+let timeoutId
+
 export const setNotification = (content, duration) => {
   return async dispatch => {
+    clearTimeout(timeoutId)
     dispatch({
       type: 'SET_NOTIFICATION',
       content
     })
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       dispatch({
         type: 'SET_NOTIFICATION',
         content: ''
