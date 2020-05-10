@@ -7,17 +7,15 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const [blogsREMOVE, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const blogFormRef = React.createRef()
@@ -54,21 +52,18 @@ const App = () => {
     }
   }
 
-  const handleLike = async (id) => {
-    const blogToLike = blogsREMOVE.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    setBlogs(blogsREMOVE.map(b => b.id === id ? { ...blogToLike, likes: blogToLike.likes + 1 } : b))
+  const like = async (id) => {
+    const likedBlog = blogs.find(b => b.id === id)
+    dispatch(likeBlog(likedBlog))
     dispatch(setNotification(`${likedBlog.title} by ${likedBlog.author} liked!`))
   }
 
-  const handleRemove = async (id) => {
-    const blogToRemove = blogsREMOVE.find(b => b.id === id)
-    const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
+  const remove = async (id) => {
+    const removedBlog = blogs.find(b => b.id === id)
+    const ok = window.confirm(`Remove blog ${removedBlog.title} by ${removedBlog.author}`)
     if (ok) {
-      await blogService.remove(id)
-      setBlogs(blogsREMOVE.filter(b => b.id !== id))
-      dispatch(setNotification(`Removed ${blogToRemove.title} by ${blogToRemove.author}`))
+      dispatch(removeBlog(removedBlog.id))
+      dispatch(setNotification(`Removed ${removedBlog.title} by ${removedBlog.author}`))
     }
   }
 
@@ -99,8 +94,8 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                handleLike={handleLike}
-                handleRemove={handleRemove}
+                handleLike={like}
+                handleRemove={remove}
                 own={user.username === blog.user.username}
               />
             )}
