@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import Users from './components/Users'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
@@ -67,7 +72,7 @@ const App = () => {
   )
 
   return (
-    <div>
+    <Router>
       <Notification />
       {user === null ?
         <LoginForm loginUser={handleLogin} /> :
@@ -76,21 +81,32 @@ const App = () => {
           <div>{user.name} logged in
             <button onClick={handleLogout}>logout</button>
           </div>
-          {blogForm()}
-          <div className="blogs">
-            {blogs.map(blog =>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={like}
-                handleRemove={remove}
-                own={user.username === blog.user.username}
-              />
-            )}
-          </div>
         </div>
       }
-    </div>
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          {user &&
+            <div>
+              {blogForm()}
+              <div className="blogs">
+                {blogs.map(blog =>
+                  <Blog
+                    key={blog.id}
+                    blog={blog}
+                    handleLike={like}
+                    handleRemove={remove}
+                    own={user.username === blog.user.username}
+                  />
+                )}
+              </div>
+            </div>
+          }
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
