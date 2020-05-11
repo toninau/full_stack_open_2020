@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Blog from './components/Blog'
@@ -7,19 +7,16 @@ import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 
-import loginService from './services/login'
-import storage from './utils/storage'
-
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
+import { initializeUser, loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const [user, setUser] = useState(null)
-
   const blogFormRef = React.createRef()
 
+  const user = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
@@ -27,19 +24,15 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    const user = storage.loadUser()
-    setUser(user)
-  }, [])
+    dispatch(initializeUser())
+  }, [dispatch])
 
   const handleLogin = async (userObject) => {
-    try {
-      const user = await loginService.login(userObject)
-      setUser(user)
-      dispatch(setNotification(`${user.name} welcome back!`))
-      storage.saveUser(user)
-    } catch (exception) {
-      dispatch(setNotification('wrong username/password', 'error'))
-    }
+    dispatch(loginUser(userObject))
+  }
+
+  const handleLogout = () => {
+    dispatch(logoutUser())
   }
 
   const create = async (blog) => {
@@ -65,11 +58,6 @@ const App = () => {
       dispatch(removeBlog(removedBlog.id))
       dispatch(setNotification(`Removed ${removedBlog.title} by ${removedBlog.author}`))
     }
-  }
-
-  const handleLogout = () => {
-    setUser(null)
-    storage.logoutUser()
   }
 
   const blogForm = () => (
