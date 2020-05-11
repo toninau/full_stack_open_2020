@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Users = () => {
-  const [users, setUsers] = useState([])
-
-  useEffect(() => {
-    axios
-      .get('/api/users')
-      .then(response => setUsers(response.data))
-  }, [])
-
+const UserList = ({ users }) => {
   const byBlogs = (a, b) => b.blogs.length - a.blogs.length
 
   return (
@@ -23,7 +15,9 @@ const Users = () => {
           </tr>
           {users.sort(byBlogs).map(user =>
             <tr key={user.id}>
-              <td>{user.name ? user.name : 'no name'}</td>
+              <td>
+                <Link to={`users/${user.id}`}>{user.name ? user.name : 'no name'}</Link>
+              </td>
               <td>{user.blogs.length}</td>
             </tr>
           )}
@@ -33,4 +27,4 @@ const Users = () => {
   )
 }
 
-export default Users
+export default UserList

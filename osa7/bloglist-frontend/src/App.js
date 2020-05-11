@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  BrowserRouter as Router,
-  Switch, Route
+  Switch, Route,
+  useRouteMatch
 } from 'react-router-dom'
 
 import Blog from './components/Blog'
@@ -10,7 +10,10 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import Users from './components/Users'
+import UserList from './components/UserList'
+import User from './components/User'
+
+import usersService from './services/users'
 
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
@@ -23,6 +26,14 @@ const App = () => {
 
   const user = useSelector(state => state.user)
   const blogs = useSelector(state => state.blogs)
+
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    usersService
+      .getAll()
+      .then(users => setUsers(users))
+  }, [])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -71,8 +82,13 @@ const App = () => {
     </Togglable>
   )
 
+  const match = useRouteMatch('/users/:id')
+  const userInfo = match
+    ? users.find(u => u.id === match.params.id)
+    : null
+
   return (
-    <Router>
+    <div>
       <Notification />
       {user === null ?
         <LoginForm loginUser={handleLogin} /> :
@@ -84,8 +100,11 @@ const App = () => {
         </div>
       }
       <Switch>
+        <Route path="/users/:id">
+          <User user={userInfo}/>
+        </Route>
         <Route path="/users">
-          <Users />
+          <UserList users={users} />
         </Route>
         <Route path="/">
           {user &&
@@ -106,7 +125,7 @@ const App = () => {
           }
         </Route>
       </Switch>
-    </Router>
+    </div>
   )
 }
 
