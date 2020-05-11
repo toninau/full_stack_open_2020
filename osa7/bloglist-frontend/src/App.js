@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Switch, Route,
+  useHistory,
   useRouteMatch
 } from 'react-router-dom'
 
@@ -12,6 +13,7 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
 import User from './components/User'
+import BlogList from './components/BlogList'
 
 import usersService from './services/users'
 
@@ -28,6 +30,8 @@ const App = () => {
   const blogs = useSelector(state => state.blogs)
 
   const [users, setUsers] = useState([])
+
+  const history = useHistory()
 
   useEffect(() => {
     usersService
@@ -49,6 +53,7 @@ const App = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser())
+    history.push('/')
   }
 
   const create = async (blog) => {
@@ -73,6 +78,7 @@ const App = () => {
     if (ok) {
       dispatch(removeBlog(removedBlog.id))
       dispatch(setNotification(`Removed ${removedBlog.title} by ${removedBlog.author}`))
+      history.push('/')
     }
   }
 
@@ -82,9 +88,14 @@ const App = () => {
     </Togglable>
   )
 
-  const match = useRouteMatch('/users/:id')
-  const userInfo = match
-    ? users.find(u => u.id === match.params.id)
+  const userMatch = useRouteMatch('/users/:id')
+  const userInfo = userMatch
+    ? users.find(u => u.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const blogInfo = blogMatch
+    ? blogs.find(b => b.id === blogMatch.params.id)
     : null
 
   return (
@@ -101,26 +112,25 @@ const App = () => {
       }
       <Switch>
         <Route path="/users/:id">
-          <User user={userInfo}/>
+          <User user={userInfo} />
         </Route>
         <Route path="/users">
           <UserList users={users} />
+        </Route>
+        <Route path="/blogs/:id">
+          {user && blogInfo &&
+            <Blog
+              blog={blogInfo}
+              handleLike={like}
+              handleRemove={remove}
+              own={user.username === blogInfo.user.username}
+            />}
         </Route>
         <Route path="/">
           {user &&
             <div>
               {blogForm()}
-              <div className="blogs">
-                {blogs.map(blog =>
-                  <Blog
-                    key={blog.id}
-                    blog={blog}
-                    handleLike={like}
-                    handleRemove={remove}
-                    own={user.username === blog.user.username}
-                  />
-                )}
-              </div>
+              <BlogList blogs={blogs} />
             </div>
           }
         </Route>
