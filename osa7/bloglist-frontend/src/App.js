@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  Switch, Route,
+  Switch, Route, Link,
   useHistory,
   useRouteMatch
 } from 'react-router-dom'
@@ -98,17 +98,28 @@ const App = () => {
     ? blogs.find(b => b.id === blogMatch.params.id)
     : null
 
+  const styling = {
+    display: 'flex',
+    alignItems: 'baseline',
+    backgroundColor: 'lightgrey',
+    padding: 5,
+    margin: 5
+  }
+
   return (
     <div>
-      <Notification />
-      {user === null ?
-        <LoginForm loginUser={handleLogin} /> :
-        <div>
-          <h2>blogs</h2>
-          <div>{user.name} logged in
+      <div style={styling}>
+        <Link to="/">blogs</Link>
+        <Link to="/users">users</Link>
+        {user &&
+          <p>{user.name} logged in
             <button onClick={handleLogout}>logout</button>
-          </div>
-        </div>
+          </p>
+        }
+      </div>
+      <Notification />
+      {user === null &&
+        <LoginForm loginUser={handleLogin} />
       }
       <Switch>
         <Route path="/users/:id">
@@ -129,6 +140,7 @@ const App = () => {
         <Route path="/">
           {user &&
             <div>
+              <h2>blog app</h2>
               {blogForm()}
               <BlogList blogs={blogs} />
             </div>
