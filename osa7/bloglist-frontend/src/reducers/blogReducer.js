@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { setNotification } from './notificationReducer'
 
 const byLikes = (a, b) => b.likes - a.likes
 
@@ -36,12 +37,16 @@ export const createBlog = (blog) => {
 
 export const createComment = (blog, comment) => {
   return async dispatch => {
-    const data = await blogService.comment(comment, blog.id)
-    const comments = [...blog.comments, data]
-    dispatch({
-      type: 'CREATE_COMMENT',
-      data: { ...blog, comments }
-    })
+    try {
+      const data = await blogService.comment(comment, blog.id)
+      const comments = [...blog.comments, data]
+      dispatch({
+        type: 'CREATE_COMMENT',
+        data: { ...blog, comments }
+      })
+    } catch (exception) {
+      dispatch(setNotification('comment missing!', 'error'))
+    }
   }
 }
 
