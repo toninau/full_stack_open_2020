@@ -14,11 +14,13 @@ import LoginForm from './components/LoginForm'
 import UserList from './components/UserList'
 import User from './components/User'
 import BlogList from './components/BlogList'
+import CommentList from './components/CommentList'
+import CommentForm from './components/CommentForm'
 
 import usersService from './services/users'
 
 import { setNotification } from './reducers/notificationReducer'
-import { initializeBlogs, createBlog, likeBlog, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs, createBlog, likeBlog, removeBlog, createComment } from './reducers/blogReducer'
 import { initializeUser, loginUser, logoutUser } from './reducers/userReducer'
 
 const App = () => {
@@ -64,6 +66,12 @@ const App = () => {
     } catch (exception) {
       console.log(exception)
     }
+  }
+
+  const addComment = async (comment, id) => {
+    const commentedBlog = blogs.find(b => b.id === id)
+    dispatch(createComment(commentedBlog, comment))
+    dispatch(setNotification(`a new comment ${comment.text} added!`))
   }
 
   const like = async (id) => {
@@ -130,12 +138,18 @@ const App = () => {
         </Route>
         <Route path="/blogs/:id">
           {user && blogInfo &&
-            <Blog
-              blog={blogInfo}
-              handleLike={like}
-              handleRemove={remove}
-              own={user.username === blogInfo.user.username}
-            />}
+            <div>
+              <Blog
+                blog={blogInfo}
+                handleLike={like}
+                handleRemove={remove}
+                own={user.username === blogInfo.user.username}
+              />
+              <h3>comments</h3>
+              <CommentForm handleComment={addComment} id={blogInfo.id} />
+              <CommentList comments={blogInfo.comments} />
+            </div>
+          }
         </Route>
         <Route path="/">
           {user &&

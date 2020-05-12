@@ -9,6 +9,10 @@ const reducer = (state = [], action) => {
     return action.data.sort(byLikes)
   case 'CREATE':
     return [...state, action.data]
+  case 'CREATE_COMMENT': {
+    const commentedBlog = action.data
+    return state.map(blog => blog.id === commentedBlog.id ? commentedBlog : blog)
+  }
   case 'LIKE': {
     const likedBlog = action.data
     return state.map(blog => blog.id === likedBlog.id ? likedBlog : blog).sort(byLikes)
@@ -26,6 +30,17 @@ export const createBlog = (blog) => {
     dispatch({
       type: 'CREATE',
       data
+    })
+  }
+}
+
+export const createComment = (blog, comment) => {
+  return async dispatch => {
+    const data = await blogService.comment(comment, blog.id)
+    const comments = [...blog.comments, data]
+    dispatch({
+      type: 'CREATE_COMMENT',
+      data: { ...blog, comments }
     })
   }
 }
