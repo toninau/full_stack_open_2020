@@ -6,6 +6,8 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
     return null
   }
 
+  const byDate = (a, b) => b.date - a.date
+
   return (
     <div>
       <h2>{blog.title} by {blog.author}</h2>
@@ -13,8 +15,14 @@ const Blog = ({ blog, handleLike, handleRemove, own }) => {
       <div>{blog.likes} likes
         <button id="like-button" onClick={() => handleLike(blog.id)}>like</button>
       </div>
-      <div>{blog.user.name}</div>
+      <div>added by {blog.user.name}</div>
       {own && <button id="remove-button" onClick={() => handleRemove(blog.id)}>remove</button>}
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.sort(byDate).map(comment =>
+          <li key={comment.id}>{comment.text}</li>
+        )}
+      </ul>
     </div>
   )
 }
