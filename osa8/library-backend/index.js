@@ -66,7 +66,7 @@ const resolvers = {
       if (args.genre && args.author) {
         return books.filter(book => book.author === args.author && book.genres.includes(args.genre))
       } else if (args.genre) {
-        return Book.find({ genres: args.genre }).populate('author')
+        return Book.find({ genres: { $in: args.genre } }).populate('author')
       } else if (args.author) {
         return books.filter(book => book.author === args.author)
       }
@@ -80,19 +80,19 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       let author = await Author.findOne({ name: args.author })
-      if (!author) {
-        const authorToCreate = new Author({ name: args.author })
-        author = await authorToCreate.save()
-      }
-      const book = new Book({ ...args, author })
       try {
+        if (!author) {
+          const authorToCreate = new Author({ name: args.author })
+          author = await authorToCreate.save()
+        }
+        const book = new Book({ ...args, author })
         await book.save()
+        return book
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
         })
       }
-      return book
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
