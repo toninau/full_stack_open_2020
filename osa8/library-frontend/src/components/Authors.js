@@ -7,6 +7,9 @@ const BornForm = ({ authors }) => {
   const [born, setBorn] = useState('')
 
   const [changeBorn, result] = useMutation(EDIT_AUTHOR, {
+    onError: (error) => {
+      console.log(error.graphQLErrors[0].message)
+    },
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
