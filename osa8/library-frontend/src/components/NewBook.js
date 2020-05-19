@@ -13,7 +13,22 @@ const NewBook = (props) => {
     onError: (error) => {
       console.log(error.graphQLErrors[0].message)
     },
-    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }]
+    update: (cache, { data: { addBook } }) => {
+      const { allBooks } = cache.readQuery({ query: ALL_BOOKS })
+      const { allAuthors } = cache.readQuery({ query: ALL_AUTHORS })
+      cache.writeQuery({
+        query: ALL_BOOKS,
+        data: {
+          allBooks: allBooks.concat([addBook]),
+        }
+      })
+      cache.writeQuery({
+        query: ALL_AUTHORS,
+        data: {
+          allAuthors: allAuthors.concat([addBook.author])
+        }
+      })
+    }
   })
 
   if (!props.show) {
