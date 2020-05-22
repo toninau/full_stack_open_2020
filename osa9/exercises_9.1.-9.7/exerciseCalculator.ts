@@ -26,7 +26,7 @@ const argumentParser = (args: Array<string>): ExerciseValues => {
   }
 };
 
-const calculateExercises = (dailyHours: number[], targetHour: number): Result => {
+export const calculateExercises = (dailyHours: number[], targetHour: number): Result => {
   const descriptions: string[] = ['room for improvement', 'not too bad but could be better', 'excellent'];
   const average: number = dailyHours.reduce((a, b) => a + b) / dailyHours.length;
   const trainingDays: number = dailyHours.filter(hour => hour !== 0).length;
