@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     const addedPatient = patientService.addEntry(newPatient);
     res.json(addedPatient);
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 });
 
