@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import { Patient, Gender } from "../types";
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientInfo } from "../state";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -19,10 +19,10 @@ const PatientListPage: React.FC = () => {
   React.useEffect(() => {
     const getPatientInfo = async () => {
       try {
-        const { data: patientDetailsFromApi } = await axios.get<Patient>(
+        const { data: patientInfoFromApi } = await axios.get<Patient>(
           `${apiBaseUrl}/patients/${id}`
         );
-        dispatch({ type: "SET_PATIENT_INFO", payload: patientDetailsFromApi });
+        dispatch(setPatientInfo(patientInfoFromApi));
       } catch (e) {
         console.error(e);
       }
