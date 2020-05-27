@@ -1,23 +1,22 @@
-import React from 'react';
-import { Patient, Entry } from '../types';
+import React from "react";
+import { Patient, Entry } from "../types";
 import PatientDiagnosis from "./PatientDiagnosis";
+import EntryDetails from "./EntryDetails";
 
-type EntriesProps = {
-  patient: Patient;
-};
+import { Segment } from "semantic-ui-react";
 
-const PatientEntries: React.FC<EntriesProps> = ({ patient }: EntriesProps) => {
+const PatientEntries: React.FC<{ patient: Patient }> = ({ patient }) => {
   return (
     <div>
       {patient.entries.map((entry: Entry) => (
-        <div key={entry.id}>
-          <p>{entry.date} <i>{entry.description}</i></p>
+        <Segment key={entry.id}>
+          <EntryDetails entry={entry} />
           <ul>
             {entry.diagnosisCodes?.map(code => (
               <PatientDiagnosis key={code} code={code} />
             ))}
           </ul>
-        </div>
+        </Segment>
       ))}
     </div>
   );

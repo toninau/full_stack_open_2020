@@ -37,11 +37,11 @@ const PatientListPage: React.FC = () => {
   const getIcon = (gender: Gender) => {
     switch (gender) {
       case Gender.Male:
-        return <Icon name={'mars'} />;
+        return <Icon name='mars' />;
       case Gender.Female:
-        return <Icon name={'venus'} />;
+        return <Icon name='venus' />;
       case Gender.Other:
-        return <Icon name={'genderless'} />;
+        return <Icon name='genderless' />;
       default:
         return null;
     }
