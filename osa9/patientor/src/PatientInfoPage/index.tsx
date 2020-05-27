@@ -3,9 +3,11 @@ import axios from "axios";
 import { Container, Icon } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 
-import { Patient, Gender, Entry } from "../types";
+import { Patient, Gender } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientInfo } from "../state";
+
+import PatientEntries from "./PatientEntries";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -55,16 +57,7 @@ const PatientListPage: React.FC = () => {
             occupation: {patient.occupation}
           </p>
           <h3>entries</h3>
-          {patient.entries.map((entry: Entry) => (
-            <div key={entry.id}>
-              <p>{entry.date} <i>{entry.description}</i></p>
-              <ul>
-                {entry.diagnosisCodes?.map(code => (
-                  <li key={code}>{code}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <PatientEntries patient={patient} />
         </Container>
       }
     </div>
